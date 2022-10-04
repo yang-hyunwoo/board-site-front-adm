@@ -36,6 +36,15 @@
               <input type="text" class="form-control"  placeholder="닉네임을 입력해주세요." v-model="nick_name">
             </div>
             <div class="col-10">
+              <label for="email" class="form-label">여행사 <br></label>
+              <select class="form-select" aria-label="Default select example" v-model="travel_agency_id" >
+                <option selected value="">선택하세요</option>
+              <option v-for="(item,index) of travelAgencyList" :key="index" :value="item.id">{{item.name}}</option>
+              
+            </select>
+              
+            </div>
+            <div class="col-10">
               <label for="email" class="form-label">휴대폰 번호</label>
               <input type="text" class="form-control"  placeholder="ex)01023456899" v-model="phone_number" maxlength="13">
             </div>
@@ -93,10 +102,35 @@ export default {
       gender:"M",
       phone_number:"",
       loading:false,
+      travel_agency_id:"",
+      travelAgencyList:[],
 
     }
   },
+  created(){
+    this.init();
+  },
   methods: {
+      init() {
+        this.$axios.get(process.env.VUE_APP_JOIN_TRIP_LIST).then((res) =>{
+          if(res.data.resultCode=="SUCCESS"){
+            this.travelAgencyList=[];
+            res.data.result.forEach(element => {
+                let obj = [];
+                obj.name   = element.name;
+                obj.id     = element.id;      
+              this.travelAgencyList.push(obj);
+            });
+          }
+        }).catch(() => {
+             this.$swal('','잠시후 다시 이용해주세요.','error');
+        }).finally(() => {
+          this.chk = true;
+        });
+
+        
+      },
+
       joinSucc() {
         if(!this.email_chk) {
             this.alert_chk("이메일 을");
@@ -122,6 +156,10 @@ export default {
             this.alert_chk("휴대폰 번호 형식 을");
             return false;
         }
+        if(!this.travel_agency_id){
+            this.alert_chk("여행사 를");
+            return false;
+        }
 
         let param  = {
               "email"       : this.email ,
@@ -129,13 +167,18 @@ export default {
               "name"        : this.user_name ,
               "nickName"    : this.nick_name,
               "gender"      : this.gender,
-              "phoneNumber" : this.phone_number
+              "phoneNumber" : this.phone_number,
+              "travelAgencyId" : this.travel_agency_id,
+              "role" : "ADMIN"
         }
 
         this.loading = true;
 
-        this.$axios.post(process.env.VUE_APP_TRIP_JOIN ,param).then(() =>{
+        this.$axios.post(process.env.VUE_APP_TRIP_JOIN ,param).then((res) =>{
+            if(res.data.resultCode=="SUCCESS"){
               this.$router.push("/loginSuccess");
+            }
+            
         }).catch((error) => {
              this.$swal('',error.response.data.result,'error');
         }).finally(() => {
