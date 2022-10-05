@@ -1,86 +1,26 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <div class="hello">
-    <!-- <h1>{{ msg }}</h1> -->
-    <div id="myCarousel" class="carousel slide" data-bs-ride="carousel">
-    <div class="carousel-indicators" v-if="chk">
-      <button  v-for="(item,index) of travel_agency_list_length" :key="index" :class="{active:index==0}" type="button" data-bs-target="#myCarousel" :data-bs-slide-to=index aria-label="Slide 3"></button>
-    </div>
-    <div class="carousel-inner">
-      <div :class='index == 0 ? "carousel-item active" : "carousel-item"' style="height: 29rem;"  v-for="(item,index) of travel_agency_list" :key="index" >
-          <svg v-if="!item.img_real" class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#777"/></svg>
-          <img v-if="item.img_real" v-bind:src= "item.img" style="width: 100%; height: 100%;" >
-         <div class="container">
-          <div  class="carousel-caption text-start" > <!--text-start , null text-end -->
-            <h1>{{item.title}}</h1>
-            <p>여행사: {{item.travel_agency_name}}</p>
-            <p><button class="btn btn-lg btn-primary" href="#" @click="pageTravelDetail(item.id)">{{$numberWithCommas(item.paid)}}원</button></p>
-          </div>
-        </div>
+    <div style="margin-top: 3rem;">
+    <FullCalendar :options="calendarOptions" />
+    <div style="display: flex;">
+      <div style="width:50%">
+        <LineChart :laebelss="laebelss" :datass="datass"></LineChart>
       </div>
-     
-    </div>
-    <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
-      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Previous</span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
-      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Next</span>
-    </button>
-  </div>
-
-<div class="container marketing mgt" style="text-align:center">
-    <p>추천 여행사</p>
-    <div class="row">
-      <div class="col-lg-4" v-for="(item,index) of agency_random_list" :key="index">
-      <!-- <img :src="item.imgId" class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg"> -->
-      <div v-if="!item.img_real">
-       <svg class="bd-placeholder-img rounded-circle" width="140" height="140" role="img" aria-label="Placeholder: 140x140" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#777"/></svg>
-      </div>
-      <div v-if="item.img_real">
-        <img :src="item.img" class="rounded-circle" width="140" height="140">
-      </div>
-        <h2 class="fw-normal">{{item.name}}</h2>
-        <p style="text-overflow:ellipsis">{{item.comment}}</p>
-        <p><a class="btn btn-secondary" @click="agencyDetailClick(item.agency_id)">{{item.name}} 여행사 둘러보기</a></p>
-      </div>
-    </div><!-- /.row -->
-
-    <br>
-    <h4>이런 관광지는 어떤가요?</h4>
-    <div v-for="(item,index) of tour_list" :key="index">
-    <hr class="featurette-divider">
-
-    <div class="row featurette">
-      <div class="col-md-7 " v-if="index%2==0">
-
-        <h2 class="featurette-heading fw-normal lh-1" @click="tourList(item.id)" style="cursor: pointer;">{{item.city}}</h2>
-        <p class="lead">{{item.content}}</p>
-      </div>
-      <div class="col-md-5 order-md-2" >
-        <div v-if="!item.img_real">
-          <svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#eee"/><text x="50%" y="50%" fill="#aaa" dy=".3em">500x500</text></svg>
-      </div>
-      <div v-if="item.img_real">
-        <img :src="item.img" width="500" height="500">
-      </div>
-      </div>
-      <div class="col-md-7 order-md-2" v-if="index%2!=0">
-
-      <h2 class="featurette-heading fw-normal lh-1" @click="tourList(item.id)" style="cursor: pointer;">{{item.city}}</h2>
-        <p class="lead">{{item.content}}</p>
-        </div>
+      <div>리스트 넣기 </div>
     </div>
   </div>
 
-</div>
   </div>
 </template>
 
 <script>
 import login from "../assets/test.png"
-// import hideKey from 'dotenv';
+import '@fullcalendar/core/vdom' // solves problem with Vite
+import FullCalendar from '@fullcalendar/vue3'
+import dayGridPlugin from '@fullcalendar/daygrid'
+import interactionPlugin from '@fullcalendar/interaction'
+import LineChart from './chart/LineChart.js'
 
 export default {
   data: function () {
@@ -92,9 +32,29 @@ export default {
       travel_agency_list_length : 0,
       travel_agency_list: [],
       tour_list:[],
+      calendarOptions: {
+        locale:"ko",
+        contentHeight: 500,
+        dateClick: this.handleDateClick,
+        eventClick : this.fn_calEventClick,
+        events: [
+          { title: '아리아리', date: '2022-10-05' ,id:"1"},
+          { title: '아리아리2', date: '2022-10-05',id:"255" },
+          { title: 'event 2', date: '2022-10-06' },
+          { title: 'event 2', date: '2022-09-28' }
+        ],
+        plugins: [ dayGridPlugin, interactionPlugin ],
+        initialView: 'dayGridMonth'
+      },
+      laebelss :['10/05','10/06','10/07','10/08','10/09','10/10','10/11'],
+      datass : [10,20,30,40,50,60,70] ,
     }
   },
-
+  components: {
+    FullCalendar,
+    LineChart,
+    
+},
   created(){
     this.index = 0;
     this.chk = true;
@@ -108,7 +68,16 @@ export default {
       this.travelAgencyListSort();
       this.tourRandom();
     },
-
+    handleDateClick:function(arg) {
+      console.log(arg);
+      alert('date click! ' + arg.dateStr)
+    },
+    fn_calEventClick:function(arg){
+      console.log(JSON.stringify(arg));
+      console.log(arg.event.title);
+      console.log(arg.event.id);
+      // alert();
+    },
     travelAgencyListSort() {
       this.chk = false;
       this.$axios.get(process.env.VUE_APP_TRIP_AGENCY_LIST_SORT).then((res) =>{
