@@ -2,10 +2,10 @@
 <template>
   <div class="hello">
     <div style="margin-top: 3rem;">
-    <FullCalendar :options="calendarOptions" />
+    <FullCalendar :options="calendarOptions"/>
     <div style="display: flex;">
       <div style="width:50%">
-        <LineChart :laebelss="laebelss" :datass="datass"></LineChart>
+        <LineChart :laebelss="laebelss" :datass="datass" v-if="chartChk"></LineChart>
       </div>
       <div>리스트 넣기 </div>
     </div>
@@ -28,6 +28,7 @@ export default {
       login  : login ,
       index : 0,
       chk :false,
+      chartChk:false,
       agency_random_list : [],
       travel_agency_list_length : 0,
       travel_agency_list: [],
@@ -38,16 +39,13 @@ export default {
         dateClick: this.handleDateClick,
         eventClick : this.fn_calEventClick,
         events: [
-          { title: '아리아리', date: '2022-10-05' ,id:"1"},
-          { title: '아리아리2', date: '2022-10-05',id:"255" },
-          { title: 'event 2', date: '2022-10-06' },
-          { title: 'event 2', date: '2022-09-28' }
+          // { title: '아리아리2', date: '2022-10-05',id:"255" },
         ],
         plugins: [ dayGridPlugin, interactionPlugin ],
         initialView: 'dayGridMonth'
       },
-      laebelss :['10/05','10/06','10/07','10/08','10/09','10/10','10/11'],
-      datass : [10,20,30,40,50,60,70] ,
+      laebelss :[],
+      datass : [10] ,
     }
   },
   components: {
@@ -64,9 +62,9 @@ export default {
   methods: {
 
     init() {
-      this.travelAgencyRandom();
+      // this.travelAgencyRandom();
       this.travelAgencyListSort();
-      this.tourRandom();
+      this.travelAgencyPayCount();
     },
     handleDateClick:function(arg) {
       console.log(arg);
@@ -79,81 +77,55 @@ export default {
       // alert();
     },
     travelAgencyListSort() {
-      this.chk = false;
-      this.$axios.get(process.env.VUE_APP_TRIP_AGENCY_LIST_SORT).then((res) =>{
+      const headers = { 
+        'Authorization': 'Bearer ' + sessionStorage.getItem("token")
+      }
+      this.$axios.get(process.env.VUE_APP_TRAVEL_SCH,{headers}).then((res) =>{
           if(res.data.resultCode=="SUCCESS"){
-            this.travel_agency_list_length = res.data.result.length;
-            this.travel_agency_list=[];
+            console.log(res);
+            this.calendarOptions.events=[];
             res.data.result.forEach(element => {
-                let obj = [];
+                let obj = {};
                 obj.title               = element.title;
-                obj.travel_agency_name  = element.travelAgencyName;
-                obj.paid                = element.sale_paid;
+                obj.date  = element.travelRealTripAt.substr(0,4)+"-"+element.travelRealTripAt.substr(4,2)+"-"+element.travelRealTripAt.substr(6)
                 obj.id                  = element.id;
-              if(element.thumnbnailFileId==null || element.thumnbnailFileId==""){
-                obj.img_real = false;
-              } else{
-                obj.img_real = true;
-              }
-              obj.img    = process.env.VUE_APP_FILE_IMAGE_READ+element.thumnbnailFileId+"/"+1;
-              this.travel_agency_list.push(obj);
+            this.calendarOptions.events.push(obj);
             });
           }
         }).catch(() => {
-             this.$swal('','잠시후 다시 이용해주세요.','error');
+             this.$swal('','잠시후 다시 이용해주세요22.','error');
         }).finally(() => {
           this.chk = true;
         });
     },
 
-    travelAgencyRandom() {
-        this.$axios.get(process.env.VUE_APP_TRIP_AGENCY_RANDOM).then((res) =>{
-          if(res.data.resultCode=="SUCCESS"){
-            this.agency_random_list=[];
-            res.data.result.forEach(element => {
-             
-              let obj = [];
-              obj.name      = element.name;
-              obj.agency_id = element.id;
-              obj.comment    = element.comment;
-              if(element.fileId==null || element.fileId==""){
-                obj.img_real = false;
-              } else{
-                obj.img_real = true;
-              }
-              obj.img    = process.env.VUE_APP_FILE_IMAGE_READ+element.fileId+"/"+1;
-              this.agency_random_list.push(obj);
-            });
-          }
-        }).catch(() => {
-             this.$swal('','잠시후 다시 이용해주세요.','error');
-        }).finally(() => {
-        });
-    },
-    tourRandom() {
-      this.$axios.get(process.env.VUE_APP_TOUR_RANDOM).then((res) =>{
+    travelAgencyPayCount() {
+      const headers = { 
+        'Authorization': 'Bearer ' + sessionStorage.getItem("token")
+      }
+
+      this.$axios.get(process.env.VUE_APP_TRAVEL_PAY_COUNT,{headers}).then((res) =>{
           if(res.data.resultCode=="SUCCESS"){
             console.log(res);
-            this.tour_list=[];
+            this.laebelss=[];
+            this.datass=[];
             res.data.result.forEach(element => {
-              let obj = [];
-              obj.city      = element.city;
-              obj.id = element.id;
-              obj.content    = element.content;
-              if(element.thumbnailId==null || element.thumbnailId==""){
-                obj.img_real = false;
-              } else{
-                obj.img_real = true;
-              }
-              obj.img    = process.env.VUE_APP_FILE_IMAGE_READ+element.thumbnailId+"/"+1;
-              this.tour_list.push(obj);
+                let obj = [];
+                obj.push(element.date.substr(5,2)+element.date.substr(7,3));
+                this.datass.push(element.count);
+                 this.laebelss.push(obj);
             });
+            this.chartChk = true;
           }
         }).catch(() => {
-             this.$swal('','잠시후 다시 이용해주세요.','error');
+             this.$swal('','잠시후 다시 이용해주세요22.','error');
         }).finally(() => {
+          this.chk = true;
         });
     },
+
+
+
     agencyDetailClick(value) {
         this.$router.push({
             path: "/agencyDetail",
