@@ -104,7 +104,7 @@ export default {
                 obj.nickname    = element.nickName;
                 obj.created_at  = this.$splitDateHyphenTime(element.createdAt);
                 obj.content     = element.content;
-                obj.auth        = element.authChk;
+                obj.auth        = true;
                 obj.id          = element.id;
                 obj.upd_chk     = false;
                 this.reply.push(obj);

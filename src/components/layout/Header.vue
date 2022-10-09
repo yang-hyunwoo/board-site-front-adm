@@ -9,7 +9,7 @@
     <div class="collapse navbar-collapse nav" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0 nav__list">
         <li class="nav-item">
-             <router-link class="nav-link font-color" to="/tourList">관광지</router-link>
+             <router-link class="nav-link font-color" to="/tourList" v-if="adminAuth=='SUPER'">관광지</router-link>
         </li>
           <li class="nav-item">
              <router-link class="nav-link font-color" to="/agencyList">여행사</router-link>
@@ -92,11 +92,13 @@ export default {
       login  : login ,
       logOut : logOut,
       authChk: true,
+      adminAuth: "",
     }
   },
   created() {
     if(sessionStorage.getItem("token")!=null){
         this.authChk = false;
+        this.auth();
       } else {      
         this.authChk = true;
     }
@@ -105,7 +107,20 @@ export default {
       loginClick() {
             this.$router.push('/login');
       },
-
+      auth(){
+        const headers = { 
+        'Authorization': 'Bearer ' + sessionStorage.getItem("token")
+      }
+      this.$axios.get(process.env.VUE_APP_AUTH,{headers}).then((res) =>{
+          if(res.data.resultCode=="SUCCESS"){
+              this.adminAuth = res.data.result;
+          }
+        }).catch(() => {
+             this.$swal('','잠시후 다시 이용해주세요.','error');
+        }).finally(() => {
+          this.chk = true;
+        });
+      },
       logOutClick() {
         localStorage.clear();
         sessionStorage.clear();

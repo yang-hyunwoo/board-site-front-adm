@@ -98,6 +98,16 @@ const routes = [
         component: ()=> import('@/components/tour/TourDetail.vue'),
       },
       {
+        path: '/tourWrite',
+        name: 'tourWrite',
+        component: ()=> import('@/components/tour/TourWrite.vue'),
+      },
+      {
+        path: '/tourModify',
+        name: 'tourModify',
+        component: ()=> import('@/components/tour/TourModify.vue'),
+      },
+      {
         path: '/myHeart',
         name: 'myHeart',
         component: ()=> import('@/components/like/MyHeart.vue'),

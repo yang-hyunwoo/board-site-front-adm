@@ -162,7 +162,6 @@ export default {
         this.$refs.imageUploader.value = '';
     },
     userUpd() {
-        console.log(this.img_id);
 
         if(this.$emptyChk(this.user_nickname)){
             this.$swal('',"닉네임을 확인해주세요.",'warning');

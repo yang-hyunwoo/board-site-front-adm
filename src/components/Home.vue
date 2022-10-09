@@ -62,7 +62,6 @@ export default {
   methods: {
 
     init() {
-      // this.travelAgencyRandom();
       this.travelAgencyListSort();
       this.travelAgencyPayCount();
     },
@@ -93,7 +92,7 @@ export default {
             });
           }
         }).catch(() => {
-             this.$swal('','잠시후 다시 이용해주세요22.','error');
+             this.$swal('','잠시후 다시 이용해주세요.','error');
         }).finally(() => {
           this.chk = true;
         });
@@ -118,7 +117,7 @@ export default {
             this.chartChk = true;
           }
         }).catch(() => {
-             this.$swal('','잠시후 다시 이용해주세요22.','error');
+             this.$swal('','잠시후 다시 이용해주세요.','error');
         }).finally(() => {
           this.chk = true;
         });

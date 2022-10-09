@@ -46,6 +46,7 @@ export default {
          if(res.data.resultCode=="SUCCESS"){
             this.title = res.data.result.title;
             this.content = res.data.result.content;
+            this.contentChange = res.data.result.content;
             console.log(this.content);
           }
         }).catch((error) => {
