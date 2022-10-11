@@ -64,6 +64,17 @@ const routes = [
         name: 'agencyDetail',
         component: ()=> import('@/components/agency/AgencyDetail.vue'),
       },
+      {  
+        path: '/agencyModify',
+        name: 'agencyModify',
+        component: ()=> import('@/components/agency/AgencyModify.vue'),
+      },
+      {  
+        path: '/agencyWrite',
+        name: 'agencyWrite',
+        component: ()=> import('@/components/agency/AgencyWrite.vue'),
+      },
+      
       {
         path: '/purchaseHistory',
         name: 'purchaseHistory',

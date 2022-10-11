@@ -108,10 +108,6 @@ export default {
             if(this.$emptyChk(this.title)){
                     this.$swal('','제목을 입력해주세요.','warning');
                     return;
-                }
-            if(this.$emptyChk(this.title)){
-                this.$swal('','제목을 입력해주세요.','warning');
-                return;
             }
             if(content =="<p><\/p>" || content==" "){
                 this.$swal('','내용을 입력해주세요.','warning');

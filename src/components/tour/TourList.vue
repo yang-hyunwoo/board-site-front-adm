@@ -119,12 +119,10 @@
          const headers = { 'Authorization': 'Bearer ' + sessionStorage.getItem("token")}
 
          this.loading = true;
-         console.log(process.env.VUE_APP_TOUR_LIST);
          this.$axios.get(process.env.VUE_APP_TOUR_LIST,{headers,params:parameter}).then((res) =>{
             if(res.data.resultCode=="SUCCESS"){
              this.pageTotal = res.data.result.totalElements;
                this.tour_list=[];
-               console.log(res);
                res.data.result.content.forEach(element => {
                    let obj = [];
                    obj.title         = element.title;
@@ -177,12 +175,10 @@
        //삭제 버튼 클릭 시
        deleteClick(value,del) {
         if(del=='게시 중'){
-            console.log(value);
             const headers = { 'Authorization': 'Bearer ' + sessionStorage.getItem("token")}
 
             this.loading = true;
             this.$axios.put(process.env.VUE_APP_TOUR_DEL+value+"/delete" ,null,{headers}).then((res) =>{
-                console.log(res);
             if(res.data.resultCode=="SUCCESS"){
                 this.tourList();
                 }
@@ -201,7 +197,6 @@
        //재등록 버튼 클릭 시 
        reDeleteClick(value,del) {
         if(del=='게시 중단'){
-            console.log(value);
             const headers = { 'Authorization': 'Bearer ' + sessionStorage.getItem("token")}
 
             this.loading = true;
