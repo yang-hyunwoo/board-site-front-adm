@@ -1,15 +1,17 @@
 <template>
 <div class="margincustom margintpcust">
-    <h2>{{agency_name}}</h2>
+   
+    <h2><img :src="agencyImage" alt="" class="avatar-sm rounded-circle me-2" v-if="imgChk"/>{{agency_name}}</h2>
 </div>
 <div class="margincustom" style="margin-top:2rem;">
+ 
   {{agency_comment}} <br>
    {{agency_address}} <br>
    {{agency_tel}} 
 </div>
 
     <ToastViewer v-if="detail_viewer" :content="content"></ToastViewer>
-            <div class="d-flex flex-column comment-section">
+            <!-- <div class="d-flex flex-column comment-section">
                 
                 <div class="bg-light p-2">
                     <h3>{{agency_name}} 의 여행 목록</h3>
@@ -41,7 +43,7 @@
                             </div>
                         </div>
                 </div>
-    </div>
+    </div> -->
 <BlackBg v-if="loading"></BlackBg>
 <Pagination v-if="pageChk" :pageListItem="pageListItem" @pageCurrent="pageCurr" :pageTotal="pageTotal"></Pagination>
 </template>
@@ -69,6 +71,7 @@ export default {
         travel_list : [],
         agency_address:"",
         agency_tel:"",
+        agencyImage:'',
     }
   },
   components :{
@@ -86,8 +89,16 @@ export default {
 
       agencyInit() {
         this.loading = true;
-         this.$axios.get(process.env.VUE_APP_TRAVEL_AGENCY_DETAIL+this.articleId).then((res) =>{
+        const headers = { 'Authorization': 'Bearer ' + sessionStorage.getItem("token")}
+         this.$axios.get(process.env.VUE_APP_TRAVEL_AGENCY+this.articleId,{headers}).then((res) =>{
           if(res.data.resultCode=="SUCCESS"){
+              console.log(res);
+              if(res.data.result.fileId ==null || res.data.result.fileId==""){
+                  this.imgChk = false;
+                } else{
+                  this.imgChk = true;
+                  this.agencyImage  = process.env.VUE_APP_FILE_IMAGE_READ+res.data.result.fileId+"/"+1;
+                }
                 this.agency_name = res.data.result.name;
                 this.agency_comment = res.data.result.comment;
                 this.agency_address = res.data.result.address;
@@ -97,9 +108,8 @@ export default {
         }).catch((error) => {
              this.$swal('',error.response.data.result,'error');
         }).finally(() => {
-        //   this.loading = false;
+          this.loading = false; 
           this.detail_viewer = true;
-          this.agencyTravelListInit();
         });
         },
 
@@ -107,7 +117,8 @@ export default {
             let parameter = {
             "page" : this.page
             }
-         this.$axios.get(process.env.VUE_APP_TRAVEL_AGENCY_TRAVEL_LIST+this.articleId,{params:parameter}).then((res) =>{
+            const headers = { 'Authorization': 'Bearer ' + sessionStorage.getItem("token")}
+         this.$axios.get(process.env.VUE_APP_TRAVEL_AGENCY_TRAVEL_LIST+this.articleId,{headers,params:parameter}).then((res) =>{
           if(res.data.resultCode=="SUCCESS"){
               this.pageTotal = res.data.result.totalElements;
               this.travel_list=[];
@@ -238,5 +249,18 @@ body{
 } 
 .cursor{
   cursor: pointer
+}
+.avatar-sm {
+    height: 2rem;
+    width: 2rem;
+}
+.rounded-circle {
+    border-radius: 50%!important;
+}
+.me-2 {
+    margin-right: 0.5rem!important;
+}
+img, svg {
+    vertical-align: middle;
 }
 </style>

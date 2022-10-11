@@ -89,7 +89,7 @@ export default {
 
       this.$axios.get(process.env.VUE_APP_ARTICLE_LIST,{params:parameter}).then((res) =>{
          if(res.data.resultCode=="SUCCESS"){
-            console.log(res.data);
+
           this.pageTotal = res.data.result.totalElements;
             this.article_list=[];
             res.data.result.content.forEach(element => {
