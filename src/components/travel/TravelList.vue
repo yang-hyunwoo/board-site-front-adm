@@ -19,7 +19,7 @@
         </div>
       </div>
     </div>
-    <button style="float:right" type="button" class="btn btn-primary" @Click="tourWriteClick()">신규등록</button>
+    <button style="float:right" type="button" class="btn btn-primary" @Click="travelWriteClick()">신규등록</button>
     <button style="float:right; margin-right:10px;" type="button" class="btn btn-primary" @Click="tourWriteClick()">정렬 변경</button>
   </section>
  
@@ -148,7 +148,7 @@ export default {
       }
       this.$axios.get(process.env.VUE_APP_AUTH,{headers}).then((res) =>{
           if(res.data.resultCode=="SUCCESS"){
-              this.adminAuth = res.data.result;
+            this.adminAuth = res.data.result.role;
           }
         }).catch(() => {
              this.$swal('','잠시후 다시 이용해주세요.','error');
@@ -283,6 +283,12 @@ export default {
        this.page = 0;
        this.pageChk=false;
        this.travelList();
+    },
+    travelWriteClick() {
+      this.$router.push({
+        path: "/TravelWrite",
+        name: "travelWrite"
+      });
     },
 
 

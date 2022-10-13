@@ -30,6 +30,12 @@ const routes = [
         component: ()=> import('@/components/travel/TravelDetail.vue'),
        },
        {
+        path: '/travelWrite',
+        name: 'travelWrite',
+        component: ()=> import('@/components/travel/TravelWrite.vue'),
+       },
+       
+       {
         path: '/travelPaymentIng',
         name: 'travelPaymentIng',
         component: ()=> import('@/components/travel/TravelPaymentIng.vue'),

@@ -106,7 +106,7 @@ export default {
       }
       this.$axios.get(process.env.VUE_APP_AUTH,{headers}).then((res) =>{
           if(res.data.resultCode=="SUCCESS"){
-              this.adminAuth = res.data.result;
+            this.adminAuth = res.data.result.role;
           }
         }).catch(() => {
              this.$swal('','잠시후 다시 이용해주세요.','error');
