@@ -195,7 +195,7 @@ import ToastEditor from '@/components/editor/ToastModifyEditor.vue'
           }
         }).catch((error) => {
              this.$swal('',error.response.data.result,'error');
-             this.$router.push("/tourList");
+             this.$router.push("/travelList");
         }).finally(() => {
 
           this.test = true;

@@ -12,7 +12,7 @@
    <ToastViewer v-if="detail_viewer" :content="content"></ToastViewer>
   <span class="margincustom" style="font-size:15px;">가격:<span class="deco" >{{$numberWithCommas(real_pay)}}</span><span style="color:red; margin-left: 1rem;">{{sale_percent}}</span> <span style="margin-left:1rem;">{{$numberWithCommas(sale_paid)}}</span></span>
 <div style="margin-top:30px;text-align:center">
-  <button style="width:30%;min-width:300px" class="btn btn-primary" type="button" @click="reserve" :disabled="person_max_count <= person_count">예약하기</button>
+  <button style="width:30%;min-width:300px" class="btn btn-primary" type="button" @click="reserve" >결제인원 확인</button>
 </div>
 <BlackBg v-if="loading"></BlackBg>
 </template>
@@ -58,9 +58,11 @@ export default {
         this.travelDetailAxios();
     },
     travelDetailAxios() {
+      const headers = {
+                'Authorization': 'Bearer ' + sessionStorage.getItem("token")
+            }
         this.loading = true;
-        this.$axios.get(process.env.VUE_APP_TRAVEL_AGENCY_LIST_CRUD+this.articleId).then((res) =>{
-          console.log(res);
+        this.$axios.get(process.env.VUE_APP_TRAVEL_AGENCY_LIST_CRUD+this.articleId,{headers}).then((res) =>{
           if(res.data.resultCode=="SUCCESS"){
             // content              = res.data.result.content;
             this.title          = res.data.result.title;
@@ -84,15 +86,11 @@ export default {
     },
 
     reserve(){
-      if(!this.$tokenCheck()){
-        this.$router.push("/login");
-      } else {      
       this.$router.push({
-        path: "/travelPaymentIng",
-        name: "travelPaymentIng",
-        query: { sn: this.articleId }
+        path: "/PurchaseHistory",
+        name: "purchaseHistory",
+        query: { sn: this.travelDetail }
       });
-    }
     }
 
   }

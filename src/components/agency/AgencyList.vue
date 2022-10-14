@@ -10,7 +10,7 @@
         </div>
       </div>
     </div>
-       <button style="float:right" type="button" class="btn btn-primary" @Click="tourWriteClick()">신규등록</button>
+       <button style="float:right" type="button" class="btn btn-primary" @Click="tourWriteClick()" v-if="adminAuth=='SUPER'">신규등록</button>
      </section>
 <div class="container">
   <div class="row py-5">
