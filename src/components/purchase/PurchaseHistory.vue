@@ -1,7 +1,7 @@
 <template>
 <div class="bootstrap snippets bootdey" style="margin-top:4rem;">
     <div class="row" style="margin-left:1rem;">
-        <h3>구매 내역</h3>
+        <h3>{{title}} 구매 내역</h3>
         <div class="col-lg-12">
             <div class="main-box no-header clearfix">
                 <div class="main-box-body clearfix">
@@ -9,9 +9,10 @@
                         <table class="table user-list">
                             <thead>
                                 <tr>
-                                <th><span>여행 상품명</span></th>
                                 <th><span>결제일</span></th>
+                                <th><span>이름/Id/hp</span></th>
                                 <th><span>결제 금액</span></th>
+                                <th><span>인원 수</span></th>
                                 <th class="text-center"><span>결제 여부</span></th>
                                 <th class="text-center"><span></span></th>
    
@@ -19,24 +20,17 @@
                             </thead>
                             <tbody>
                                 <tr v-for="(item,index) of purchase_list" :key="index">
-                                    <td>
-                                        <div class="img-wrap"><img v-if="item.img_chk" :src="item.img" ></div>
-                                        <span class="user-link" style="font-size:16px;">{{item.travel_nm}}</span>
-                                    </td>
                                     <td>{{item.created_at}}</td>
-                                    <td>{{$numberWithCommas(item.paid)}}원  
-                                        <button class="btn btn-danger" v-if="item.state=='결제 완료'" style="font-size:10px;margin-left:10px;" @Click="refundClick(item.imp_uid,item.paid,item.person_count,item.id,item.list_id)">결제 취소</button></td>
-                                    <td class="text-center">
-                                        <span class="label label-default">{{item.state}}</span>
-                                    </td>
-                                    <!-- <td v-if="item.state=='결제 완료'" style=" display:flex;align-items: center;"> -->
-                                        <td v-if="item.state=='결제 완료'" >
-                                        <button class="btn btn-primary" style="font-size:10px;margin-left:10px" @click="qrImg(item.qrcode_id,item.qrcode_img)">qr 확인</button>
-                                        
+                                    <td>{{item.name}}/{{item.email}}/{{item.phoneNumber}}</td>
+                                    <td>{{$numberWithCommas(item.paid)}}원  </td>
+                                    <td>{{item.person_count}}명</td>
+                                    <td v-if="item.state=='결제 완료'" >
+                                        결제 완료
+                                        <button class="btn btn-danger" v-if="item.state=='결제 완료'" style="font-size:10px;margin-left:10px;" @Click="refundClick(item.imp_uid,item.paid,item.person_count,item.id,item.list_id)">결제 취소</button>
                                     </td>
                                     <td v-if="item.state=='결제 취소'">
                                       <span style="color:blue;">환불 완료</span>
-                                    </td>
+                                    </td> 
                                 </tr>
                                 <tr colspan="5" v-if="purchase_list.length==0">
                                     <td>결제 내역이 없습니다.</td>
@@ -52,25 +46,16 @@
    <Pagination v-if="pageChk" :pageListItem="pageListItem" @pageCurrent="pageCurr" :pageTotal="pageTotal" ></Pagination>
 
 <BlackBg v-if="loading"></BlackBg>
-<!-- <div class="qrOpenBg"  v-if="qrOpen" @click="qrOpen=!qrOpen"></div>
-<div v-if="qrOpen" class="qrPopup">
-   <img :src="selectQr">
-</div> -->
-<Dialog @close="qrOpen=false" v-if="qrOpen">
-    <template #cont>
-        <img :src="selectQr">
-    </template>
-</Dialog>
 </template>
 <script>
 import BlackBg from "../loading/BlackBg"
 import Pagination from '../layout/Pagination';
-import Dialog from '../dialog/Dialog';
 
 
 export default {
 	data: function () {
     return {
+        travelAgencyListId : this.$route.query.sn,
         loading:false,
         pageListItem : 10 ,
         page : 0 ,
@@ -79,14 +64,14 @@ export default {
         purchase_list:[],
         ///qr 팝업
         qrOpen:false,
-        selectQr:''
+        selectQr:'',
+        title:'',
 
     }
   },
     components :{
         BlackBg,
         Pagination,
-        Dialog
         
     },
     created() {
@@ -94,7 +79,25 @@ export default {
     },  
     methods: {
         init() {
-            this.purchaseList();
+            this.travelAgency();
+        },
+        travelAgency() {
+            const headers = {
+                'Authorization': 'Bearer ' + sessionStorage.getItem("token")
+            }
+                this.loading = true;
+                this.$axios.get(process.env.VUE_APP_TRAVEL_AGENCY_LIST_CRUD+this.travelAgencyListId,{headers}).then((res) =>{
+                
+                if(res.data.resultCode=="SUCCESS"){
+                    this.title = res.data.result.title;
+                    this.purchaseList();
+                }
+                }).catch(() => {
+                history.back(-1);
+                }).finally(() => {
+                this.detail_viewer =true;
+                this.loading = false;
+                });
         },
         purchaseList() {
             const headers = { 'Authorization': 'Bearer ' + sessionStorage.getItem("token")}
@@ -102,29 +105,22 @@ export default {
                 "page" : this.page
             }
              this.loading = true;
-             this.$axios.get(process.env.VUE_APP_PURCHASE_LIST,{headers,params:parameter}).then((res) =>{
-                console.log(res);
+             this.$axios.get(process.env.VUE_APP_PURCHASE_LIST+this.travelAgencyListId+"/purchaseList",{headers,params:parameter}).then((res) =>{
                 if(res.data.resultCode=="SUCCESS"){
+                    console.log(res);
                     this.pageTotal = res.data.result.totalElements;
                     this.purchase_list = [] ;
                     res.data.result.content.forEach(element => {
                         let obj = [];
-                        if(element.thumbFileId ==null || element.thumbFileId==""){
-                            obj.img_chk = false;
-                        } else{
-                            obj.img_chk = true;
-                        }
-                            obj.img = process.env.VUE_APP_FILE_IMAGE_THUMB_READ+element.thumbFileId+"/"+1;
-                            obj.agency_nm       = element.travelAgencyName;
-                            obj.travel_nm       = element.travelAgencyListTitle;
                             obj.created_at      = this.$splitDateHyphenTime(element.createdAt);
+                            obj.name = element.tripUserDto.name;
+                            obj.email = element.tripUserDto.email;
+                            obj.phoneNumber = element.tripUserDto.phoneNumber;
                             obj.paid            = element.paid;
+                            obj.person_count = element.personCount;
                             obj.imp_uid         = element.imp_uid;
-                            obj.person_count    = element.personCount;
                             obj.id              = element.id;
                             obj.list_id         = element.travelAgencyListId;
-                            obj.qrcode_id       = element.qrCodeId;
-                            obj.qrcode_img      = process.env.VUE_APP_FILE_IMAGE_READ+element.qrCodeId+"/"+1;
                             if(element.deleted){
                                 obj.state = "결제 취소";
                             } else {
@@ -155,44 +151,44 @@ export default {
             console.log(value);
         },  
         refundClick(uid,paid,person_count,id,list_id) {
-        this.$swal.fire({
-                        title: '환불 하시겠습니까?',
-                        text: '다시 되돌릴 수 없습니다.',
-                        icon: 'warning',
-                        showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
-                        confirmButtonColor: '#3085d6', // confrim 버튼 색깔 지정
-                        cancelButtonColor: '#d33', // cancel 버튼 색깔 지정
-                        confirmButtonText: '확인', // confirm 버튼 텍스트 지정
-                        cancelButtonText: '취소', // cancel 버튼 텍스트 지정
-                        reverseButtons: true, // 버튼 순서 거꾸로
-   
-      }).then(result => {
-         if (result.isConfirmed) {
-            let param = {
-                "impUid" : uid,
-                "money" : paid,
-                "personCount" : person_count,
-                "id"           : id,
-                "travelAgencyListId" : list_id
+                this.$swal.fire({
+                                title: '환불 하시겠습니까?',
+                                text: '다시 되돌릴 수 없습니다.',
+                                icon: 'warning',
+                                showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
+                                confirmButtonColor: '#3085d6', // confrim 버튼 색깔 지정
+                                cancelButtonColor: '#d33', // cancel 버튼 색깔 지정
+                                confirmButtonText: '확인', // confirm 버튼 텍스트 지정
+                                cancelButtonText: '취소', // cancel 버튼 텍스트 지정
+                                reverseButtons: true, // 버튼 순서 거꾸로
+        
+            }).then(result => {
+                if (result.isConfirmed) {
+                    let param = {
+                        "impUid" : uid,
+                        "money" : paid,
+                        "personCount" : person_count,
+                        "id"           : id,
+                        "travelAgencyListId" : list_id
+                    }
+                    const headers = {
+                        'Authorization': 'Bearer ' + sessionStorage.getItem("token")
+                    }
+                this.loading = true;
+                this.$axios.post(process.env.VUE_APP_TRAVEL_REFUND ,param,{headers}).then((res) =>{
+                    if(res.data.result) {
+                        this.$swal('',"환불이 완료 되었습니다.",'success');
+                        this.purchaseList();
+                    }
+                }).catch((error) => {
+                    this.$swal('',error.response.data.result,'error');
+                }).finally(() => {
+                this.loading = false;
+                });
+                }
+            });
             }
-            const headers = {
-                'Authorization': 'Bearer ' + sessionStorage.getItem("token")
-            }
-         this.loading = true;
-         this.$axios.post(process.env.VUE_APP_TRAVEL_REFUND ,param,{headers}).then((res) =>{
-            if(res.data.result) {
-                  this.$swal('',"환불이 완료 되었습니다.",'success');
-                  this.purchaseList();
-            }
-        }).catch((error) => {
-             this.$swal('',error.response.data.result,'error');
-        }).finally(() => {
-          this.loading = false;
-        });
-          }
-      });
-    }
-  }
+        }
 }
 
 

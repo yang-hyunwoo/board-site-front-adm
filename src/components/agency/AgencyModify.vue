@@ -138,7 +138,7 @@ export default {
           }
         }).catch((error) => {
              this.$swal('',error.response.data.result,'error');
-             this.$router.push("/tourList");
+             this.$router.push("/agencyList");
         }).finally(() => {
           this.pageChk = true;
           this.loading = false;
