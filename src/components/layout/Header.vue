@@ -20,12 +20,7 @@
         <li class="nav-item">
              <router-link class="nav-link font-color" to="/article">자유 게시판</router-link>
         </li>
-        <li class="nav-item">
-             <router-link class="nav-link font-color" to="/purchaseHistory">구매 내역</router-link>
-        </li>
-        <li class="nav-item">
-             <router-link class="nav-link font-color" to="/myHeart">좋아요</router-link>
-        </li>
+
         <li class="nav-item">
              <router-link class="nav-link font-color" to="/chatList">채팅방</router-link>
         </li>
@@ -55,6 +50,7 @@
   backdrop-filter : blur(30px) !important;
   background-color : #D9EDF7;
   z-index: 9999;
+  margin-top:-30px;
  
 } 
 

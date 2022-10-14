@@ -59,7 +59,7 @@ export default {
     },
     travelDetailAxios() {
         this.loading = true;
-        this.$axios.get(process.env.VUE_APP_TRAVEL_DETAIL+this.articleId).then((res) =>{
+        this.$axios.get(process.env.VUE_APP_TRAVEL_AGENCY_LIST_CRUD+this.articleId).then((res) =>{
           console.log(res);
           if(res.data.resultCode=="SUCCESS"){
             // content              = res.data.result.content;

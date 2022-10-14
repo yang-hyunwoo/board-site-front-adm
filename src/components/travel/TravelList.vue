@@ -20,7 +20,6 @@
       </div>
     </div>
     <button style="float:right" type="button" class="btn btn-primary" @Click="travelWriteClick()">신규등록</button>
-    <button style="float:right; margin-right:10px;" type="button" class="btn btn-primary" @Click="tourWriteClick()">정렬 변경</button>
   </section>
  
   <div class="container">
@@ -42,12 +41,13 @@
                                 <th scope="col">제목</th>
                                 <th scope="col">도시</th>
                                 <th scope="col">여행사</th>
-                                <th scope="col">실제가격/할인율/할인가격</th>
+                                <th scope="col">가격/할인율/할인가격</th>
                                 <th scope="col">등록일~종료일</th>
                                 <th scope="col">출발일</th>
                                 <th v-if="adminAuth=='SUPER'" scope="col">정렬 순서</th>
                                 <th scope="col">종료여부</th>
                                 <th scope="col" style="width: 200px;">변경</th>
+                                <th scope="col" v-if="adminAuth=='SUPER'">정렬</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -87,6 +87,19 @@
                                         </li>
                                     </ul>
                                 </td>
+                                <td v-if="adminAuth=='SUPER'">
+                                  <li class="list-inline-item">
+                                          <select v-model="formSort.newSort[index]" >
+                                            <option value="">선택</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                          </select>
+                                          <button class="btn btn-primary" style="margin-left:3px; height:35px;" @click="sortClcik(item.id,index)">적용</button>
+                                    </li>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -124,6 +137,10 @@ export default {
       startPage:'',
       endPage:'',
       totalList:'',
+      travelAgencyListSort:'',
+      formSort: {
+          newSort: ['','','','','','','','','','']
+        },
 
     }
   },
@@ -167,6 +184,7 @@ export default {
     },  
 
     travelList() {
+      this.formSort.newSort=['','','','','','','','','',''];
       const headers = {
             'Authorization': 'Bearer ' + sessionStorage.getItem("token")
         }
@@ -194,7 +212,7 @@ export default {
             this.travel_list=[];
             res.data.result.content.forEach(element => {
                 let obj = [];
-                obj.title         = element.title;
+                obj.title         = element.title.substr(0,6);
                 obj.travelAgencyName          = element.travelAgencyName;
                 obj.id            = element.id;
                 obj.city          = element.city;
@@ -272,7 +290,28 @@ export default {
         this.$swal('','이미 사용중인 여행사 입니다.','warning');
       }
     },
+    sortClcik(value,index) {
+        let chkSort = this.formSort.newSort[index];
+        if(chkSort=='' || chkSort==null){
+            chkSort=0;
+        }
 
+        const headers = {
+                'Authorization': 'Bearer ' + sessionStorage.getItem("token")
+            }
+            this.loading = true;
+            this.$axios.put(process.env.VUE_APP_TRAVEL_AGENCY_LIST_CRUD+value+"/"+chkSort+"/sort" ,"",{headers}).then((res) =>{
+              if(res.data.resultCode=="SUCCESS"){
+                this.travelList();
+              }
+              
+            }).catch((error) => {
+                this.$swal('',error.response.data.result,'error');
+            }).finally(() => {
+              this.loading = false;
+            });
+
+    },
 
     pageCurr(value){
       this.page = value-1;
@@ -291,13 +330,19 @@ export default {
       });
     },
 
-
     todoCclick(value) {
        this.$router.push({
         path: "/TravelDetail",
         name: "travelDetail",
         query: { sn: value }
       });
+    },
+    updateClick(value){
+        this.$router.push({
+           path: "/travelModify",
+           name: "travelModify",
+           query: { sn: value }
+         });
     },
 },
 watch : {

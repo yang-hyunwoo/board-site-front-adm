@@ -34,7 +34,11 @@ const routes = [
         name: 'travelWrite',
         component: ()=> import('@/components/travel/TravelWrite.vue'),
        },
-       
+       {
+        path: '/travelModify',
+        name: 'travelModify',
+        component: ()=> import('@/components/travel/TravelModify.vue'),
+       },
        {
         path: '/travelPaymentIng',
         name: 'travelPaymentIng',

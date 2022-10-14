@@ -128,6 +128,7 @@ export default {
             this.tel1 = telSplit[0];
             this.tel2 = telSplit[1];
             this.tel3 = telSplit[2];
+            this.fileId = res.data.result.fileId;
             this.roadAddress = res.data.result.address;
             this.contentChange = res.data.result.detail;
             
