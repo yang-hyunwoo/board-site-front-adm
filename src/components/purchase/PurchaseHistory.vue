@@ -6,6 +6,9 @@
             <div class="main-box no-header clearfix">
                 <div class="main-box-body clearfix">
                     <div class="table-responsive">
+                        <div class="mb-3">
+                <h5 class="card-title">목록 <span class="text-muted fw-normal ms-2">{{startPage}} to {{endPage}}  of {{totalList}}</span></h5>
+            </div>
                         <table class="table user-list">
                             <thead>
                                 <tr>
@@ -62,10 +65,10 @@ export default {
         pageTotal : 0 ,
         pageChk : false ,
         purchase_list:[],
-        ///qr 팝업
-        qrOpen:false,
-        selectQr:'',
         title:'',
+        startPage:'',
+        endPage:'',
+        totalList:'',
 
     }
   },
@@ -107,7 +110,14 @@ export default {
              this.loading = true;
              this.$axios.get(process.env.VUE_APP_PURCHASE_LIST+this.travelAgencyListId+"/purchaseList",{headers,params:parameter}).then((res) =>{
                 if(res.data.resultCode=="SUCCESS"){
-                    console.log(res);
+                    this.totalList =res.data.result.totalElements;
+                    this.startPage = (res.data.result.number*res.data.result.size)+1;
+                    if(res.data.result.numberOfElements==res.data.result.size){
+                        this.endPage = (res.data.result.number+1)*res.data.result.size;
+                    } else {
+                        this.endPage = (res.data.result.number*res.data.result.size)+res.data.result.numberOfElements;
+                    }
+        
                     this.pageTotal = res.data.result.totalElements;
                     this.purchase_list = [] ;
                     res.data.result.content.forEach(element => {

@@ -1,7 +1,5 @@
 <template>
-<div class="custom-div" v-if="auth_article">
-  <button class="btn-cl-cus-upd" @click="upd_click">수정</button><button  class="btn-cl-cus-del" @click="delete_click">삭제</button>
-</div>
+
 <div class="margincustom margintpcust">
     <h2>{{title}}</h2>
 </div>
@@ -18,9 +16,7 @@
         <div class="">
             <div class="d-flex flex-column comment-section">
                 <div class="bg-white p-2" v-for="(item,index) of reply" :key="index">
-                    <!-- <div class="d-flex flex-row user-info"><img class="rounded-circle" src="https://i.imgur.com/RpzrMR2.jpg" width="40"> -->
                         <div class="d-flex flex-column justify-content-start ml-2"><span class="d-block font-weight-bold name">{{item.nickname}}</span><span class="date text-black-50">{{item.created_at}}</span></div>
-                    <!-- </div> -->
                     <div class="mt-2">
                         <p class="comment-text" v-if="!item.upd_chk">{{item.content}}</p>
                     <div class="d-flex flex-row align-items-start" v-if="item.upd_chk" ><textarea class="form-control ml-1 shadow-none textarea" v-model="form.new_content[index]"></textarea><button class="btn-cl-cus" @click="comment_upd_db(item.id,index)">수정</button></div>
@@ -30,7 +26,6 @@
                 <Pagination v-if="pageChk" :pageListItem="pageListItem" @pageCurrent="pageCurr" :pageTotal="pageTotal"></Pagination>
 
                 <div class="bg-light p-2">
-                    <!-- <div class="d-flex flex-row align-items-start"><img class="rounded-circle" src="https://i.imgur.com/RpzrMR2.jpg" width="40"><textarea class="form-control ml-1 shadow-none textarea"></textarea></div> -->
                     <div class="d-flex flex-row align-items-start"><textarea class="form-control ml-1 shadow-none textarea" v-model="comment_reply_ins"></textarea><button class="btn-cl-cus" @click="comment_ins(articleId)">등록</button></div>
                 </div>
             </div>
@@ -98,7 +93,7 @@ export default {
 
         this.loading = true;
         this.reply=[];
-         this.$axios.get(process.env.VUE_APP_ARTICLE_COMMENT_LIST+this.articleId,this.$tokenCheck()==true?{headers,params:parameter}:{params:parameter}).then((res) =>{
+         this.$axios.get(process.env.VUE_APP_ARTICLE_COMMENT+"/"+this.articleId,this.$tokenCheck()==true?{headers,params:parameter}:{params:parameter}).then((res) =>{
           if(res.data.resultCode=="SUCCESS"){
             this.pageTotal = res.data.result.totalElements;
             res.data.result.content.forEach(element=>{
@@ -106,7 +101,7 @@ export default {
                 obj.nickname    = element.nickName;
                 obj.created_at  = this.$splitDateHyphenTime(element.createdAt);
                 obj.content     = element.content;
-                obj.auth        = element.authChk;
+                obj.auth        = true;
                 obj.id          = element.id;
                 obj.upd_chk     = false;
                 this.reply.push(obj);
@@ -195,7 +190,7 @@ export default {
           "content"   : this.form.new_content[index]
         }
          this.loading = true;
-         this.$axios.put(process.env.VUE_APP_ARTICLE_COMMENT_UPDEL+value+"/form" ,param,{headers}).then(() =>{
+         this.$axios.put(process.env.VUE_APP_ARTICLE_COMMENT+"/"+value+"/form" ,param,{headers}).then(() =>{
              this.page = 0;
              this.pageChk = false;
              this.comment_detail();
@@ -225,7 +220,7 @@ export default {
         }
 
          this.loading = true;
-         this.$axios.put(process.env.VUE_APP_ARTICLE_COMMENT_UPDEL+value+"/delete" ,null,{headers}).then(() =>{
+         this.$axios.put(process.env.VUE_APP_ARTICLE_COMMENT+"/"+value+"/delete" ,null,{headers}).then(() =>{
              this.page = 0;
              this.pageChk = false;
              this.init();
@@ -237,45 +232,6 @@ export default {
           }
       });
       },
-
-      upd_click() {
-        this.$router.push({
-          path: "/articleModify",
-          name: "articleModify",
-          query: { sn: this.articleId }
-        });
-      },
-
-      delete_click(){
-            this.$swal.fire({
-                        title: '삭제 하시겠습니까?',
-                        text: '다시 되돌릴 수 없습니다.',
-                        icon: 'warning',
-                        showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
-                        confirmButtonColor: '#3085d6', // confrim 버튼 색깔 지정
-                        cancelButtonColor: '#d33', // cancel 버튼 색깔 지정
-                        confirmButtonText: '확인', // confirm 버튼 텍스트 지정
-                        cancelButtonText: '취소', // cancel 버튼 텍스트 지정
-                        reverseButtons: true, // 버튼 순서 거꾸로
-   
-      }).then(result => {
-         if (result.isConfirmed) { // 만약 모달창에서 confirm 버튼을 눌렀다면
-             const headers = {
-               'Authorization': 'Bearer ' + sessionStorage.getItem("token")
-            }
-          this.$axios.put(process.env.VUE_APP_ARTICLE_DETAIL+this.articleId+"/delete",null,{headers}).then((res) =>{
-          if(res.data.resultCode=="SUCCESS"){
-              this.$swal('','삭제되었습니다.','success');
-              this.$router.push("/article");
-          }
-        }).catch(() => {
-           history.back(-1);
-        }).finally(() => {
-        });
-          }
-      });
-}
-
   }
 
 }
