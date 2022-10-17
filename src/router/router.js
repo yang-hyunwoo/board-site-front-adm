@@ -129,9 +129,9 @@ const routes = [
         component: ()=> import('@/components/tour/TourModify.vue'),
       },
       {
-        path: '/myHeart',
-        name: 'myHeart',
-        component: ()=> import('@/components/like/MyHeart.vue'),
+        path: '/authList',
+        name: 'authList',
+        component: ()=> import('@/components/auth/AuthList.vue'),
         beforeEnter:requireAuth(),
       },
   ],
