@@ -20,12 +20,14 @@
         <li class="nav-item">
              <router-link class="nav-link font-color" to="/article">자유 게시판</router-link>
         </li>
-
         <li class="nav-item">
              <router-link class="nav-link font-color" to="/chatList">채팅방</router-link>
         </li>
         <li class="nav-item">
              <router-link class="nav-link font-color" to="/myPage">마이 페이지</router-link>
+        </li>
+        <li class="nav-item">
+             <router-link class="nav-link font-color" to="/authList">권한 인증</router-link>
         </li>
       </ul>
       <div class="nav__login">
