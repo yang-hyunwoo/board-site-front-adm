@@ -10,6 +10,7 @@
         </div>
       </div>
     </div>
+    <button style="float:right; margin-left:10px;" type="button" class="btn btn-primary" @Click="agencyExcel()" v-if="adminAuth=='SUPER'">엑셀다운</button>
        <button style="float:right" type="button" class="btn btn-primary" @Click="tourWriteClick()" v-if="adminAuth=='SUPER'">신규등록</button>
      </section>
 <div class="container">
@@ -267,8 +268,32 @@ export default {
         } else {  
             this.$router.push("/agencyWrite");
         }
-
-    }
+    },
+    agencyExcel() {
+        let myDate = new Date();
+        let yy = String(myDate.getFullYear());
+        let mm = String(myDate.getMonth()+1 < 10 ? '0' + myDate.getMonth()+1 : myDate.getMonth()+1);
+        let dd = String(myDate.getDate() < 10 ? '0' + myDate.getDate() : myDate.getDate());
+        let today = yy + '-' + mm + '-' + dd;
+      const headers = { 
+        'Authorization': 'Bearer ' + sessionStorage.getItem("token")
+      }
+      let param = {
+        "excelType" : "TRAVELAGENCY"
+      }
+      this.$axios.get(process.env.VUE_APP_EXCEL_DOWN,{headers,responseType: 'blob',params:param}).then((res) =>{
+          const url = window.URL.createObjectURL(new Blob([res.data]));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', today+"_여행사 목록.xls");
+          document.body.appendChild(link);
+          link.click();
+        }).catch(() => {
+             this.$swal('','잠시후 다시 이용해주세요.','error');
+        }).finally(() => {
+          this.chk = true;
+        });
+    },
 
 
   }
