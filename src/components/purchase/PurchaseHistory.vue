@@ -1,7 +1,11 @@
 <template>
 <div class="bootstrap snippets bootdey" style="margin-top:4rem;">
     <div class="row" style="margin-left:1rem;">
+        <div>
         <h3>{{title}} 구매 내역</h3>
+        <button class="btn btn-primary" style="margin-left:3px; height:35px;" @click="excelDownload('ALL')">전체 엑셀</button>
+        <button class="btn btn-primary" style="margin-left:3px; height:35px;" @click="excelDownload('SUCC')">결제 완료자 엑셀</button>
+        </div>
         <div class="col-lg-12">
             <div class="main-box no-header clearfix">
                 <div class="main-box-body clearfix">
@@ -197,7 +201,35 @@ export default {
                 });
                 }
             });
-            }
+            },
+            excelDownload(value) {
+                console.log(value);
+                let myDate = new Date();
+                let yy = String(myDate.getFullYear());
+                let mm = String(myDate.getMonth()+1 < 10 ? '0' + myDate.getMonth()+1 : myDate.getMonth()+1);
+                let dd = String(myDate.getDate() < 10 ? '0' + myDate.getDate() : myDate.getDate());
+                let today = yy + '-' + mm + '-' + dd;
+                const headers = { 
+                    'Authorization': 'Bearer ' + sessionStorage.getItem("token")
+                }
+                let param = {
+                    "excelType" : "PURCHASEHISTORY" , 
+                    "Sn"        : this.travelAgencyListId,
+                    "purchYn"        : value
+                }
+                this.$axios.get(process.env.VUE_APP_EXCEL_DOWN,{headers,responseType: 'blob',params:param}).then((res) =>{
+                    const url = window.URL.createObjectURL(new Blob([res.data]));
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.setAttribute('download', today+"_"+this.title+"_결제 인원.xls");
+                    document.body.appendChild(link);
+                    link.click();
+                    }).catch(() => {
+                        this.$swal('','잠시후 다시 이용해주세요.','error');
+                    }).finally(() => {
+                    this.chk = true;
+                    });
+            },
         }
 }
 

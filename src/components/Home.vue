@@ -66,14 +66,18 @@ export default {
       this.travelAgencyPayCount();
     },
     handleDateClick:function(arg) {
-      console.log(arg);
-      alert('date click! ' + arg.dateStr)
+      this.$router.push({
+            path: "/travelList",
+            name: "travelList",
+            query: { sn: arg.dateStr }
+        });
     },
     fn_calEventClick:function(arg){
-      console.log(JSON.stringify(arg));
-      console.log(arg.event.title);
-      console.log(arg.event.id);
-      // alert();
+      this.$router.push({
+            path: "/travelDetail",
+            name: "travelDetail",
+            query: { sn: arg.event.id }
+        });
     },
     travelAgencyListSort() {
       const headers = { 

@@ -178,10 +178,20 @@ export default {
         let yy = String(myDate.getFullYear());
         let mm = String(myDate.getMonth()+1 < 10 ? '0' + myDate.getMonth()+1 : myDate.getMonth()+1);
         let dd = String(myDate.getDate() < 10 ? '0' + myDate.getDate() : myDate.getDate());
-        this.startDate=  yy + '-' + mm + '-' + "01";
-        this.startDateSplit = yy+mm+"01";
-        this.endDate= yy + '-' + mm + '-' + dd;
-        this.endDateSplit = yy+mm+dd;
+        if(this.$route.query.sn==undefined) {
+          this.startDate=  yy + '-' + mm + '-' + "01";
+          this.startDateSplit = yy+mm+"01";
+          this.endDate= yy + '-' + mm + '-' + dd;
+          this.endDateSplit = yy+mm+dd;
+        } else {
+          this.date_type = "STARTAT";
+          let querySn = this.$route.query.sn;
+          this.startDate = querySn; 
+          this.startDateSplit = querySn.substr(0,4)+querySn.substr(5,2)+querySn.substr(8);
+          this.endDate= this.startDate;
+          this.endDateSplit = this.startDateSplit;
+        }
+       
     },  
 
     travelList() {
