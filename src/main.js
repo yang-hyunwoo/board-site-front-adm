@@ -10,7 +10,6 @@ import { useCookies } from "vue3-cookies";
 import common from './assets/js/common'
 import VueSweetalert2 from 'vue-sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
-
 const app = createApp(App)
 app.config.globalProperties.$axios = axios; 
 app.use(BootstrapVue3)

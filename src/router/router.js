@@ -40,6 +40,18 @@ const routes = [
         component: ()=> import('@/components/travel/TravelModify.vue'),
        },
        {
+        path: '/travelQrReadList',
+        name: 'travelQrReadList',
+        component: ()=> import('@/components/travel/TravelQrReadList.vue'),
+       },
+       {
+        path: '/travelQrScan',
+        name: 'travelQrScan',
+        component: ()=> import('@/components/travel/TravelQrScan.vue'),
+       },
+
+       
+       {
         path: '/travelPaymentIng',
         name: 'travelPaymentIng',
         component: ()=> import('@/components/travel/TravelPaymentIng.vue'),
