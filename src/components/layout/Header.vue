@@ -9,6 +9,9 @@
     <div class="collapse navbar-collapse nav" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0 nav__list">
         <li class="nav-item">
+             <router-link class="nav-link font-color" to="/userList">사용자 조회</router-link>
+        </li>
+        <li class="nav-item">
              <router-link class="nav-link font-color" to="/tourList" v-if="adminAuth=='SUPER'">관광지</router-link>
         </li>
           <li class="nav-item">
@@ -32,17 +35,12 @@
         <li class="nav-item">
              <router-link class="nav-link font-color" to="/travelQrReadList">여행 Qr</router-link>
         </li>
+
       </ul>
       <div class="nav__login">
         <img class="nav__login__profile" v-bind:src= "login" style="width: 32px;" @click="loginClick" v-if="authChk">
         <img v-bind:src= "logOut" style="width: 32px;" @click="logOutClick">
       </div>
-      
-        
-      <!-- <form class="d-flex" role="search">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success" type="submit">Search</button>
-      </form> -->
     </div>
   </div>
 </nav>

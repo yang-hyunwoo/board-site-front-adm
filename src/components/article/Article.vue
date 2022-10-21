@@ -222,7 +222,6 @@ export default {
         if(del=='게시 중단'){
             const headers = { 'Authorization': 'Bearer ' + sessionStorage.getItem("token")}
             this.$axios.put(process.env.VUE_APP_ARTICLE_DETAIL+value+"/re-delete" ,null,{headers}).then((res) =>{
-                console.log(res);
             if(res.data.resultCode=="SUCCESS"){
                 this.articleList();
                 }

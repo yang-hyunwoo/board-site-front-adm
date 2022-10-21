@@ -126,7 +126,6 @@ export default {
 
         this.$axios.get(process.env.VUE_APP_ARTICLE_DETAIL+this.articleId,this.$tokenCheck()==true?{headers}:"").then((res) =>{
             if(res.data.resultCode=="SUCCESS"){
-              console.log(res.data.result.title);
               this.content              = res.data.result.content;
               this.title          = res.data.result.title;
               this.nickname    = res.data.result.nickName;

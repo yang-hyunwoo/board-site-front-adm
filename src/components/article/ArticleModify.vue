@@ -31,7 +31,6 @@ export default {
   },
   created(){
     this.articleId = this.$route.query.sn;
-    console.log(this.$route.query.sn);
     this.init();
   },    
   methods: {

@@ -199,7 +199,6 @@
        },
    
        acceptClick(idx, value) {
-         console.log(idx);
          if(value=='미 인증'){
              const headers = {
                    'Authorization': 'Bearer ' + sessionStorage.getItem("token")

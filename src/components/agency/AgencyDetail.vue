@@ -92,7 +92,6 @@ export default {
         const headers = { 'Authorization': 'Bearer ' + sessionStorage.getItem("token")}
          this.$axios.get(process.env.VUE_APP_TRAVEL_AGENCY+this.articleId,{headers}).then((res) =>{
           if(res.data.resultCode=="SUCCESS"){
-              console.log(res);
               if(res.data.result.fileId ==null || res.data.result.fileId==""){
                   this.imgChk = false;
                 } else{

@@ -101,7 +101,6 @@
                     "thumbnailId" : this.saveThumbnail_id,
                     "city" : this.citySelect
                 }
-                console.log(this.saveThumbnail_id)
                 await this.$axios.post(process.env.VUE_APP_TOUR_INSERT ,param,{headers}).then((res) =>{
                     if(res.data.resultCode=="SUCCESS"){
                         this.$swal('',"저장되었습니다.",'success');

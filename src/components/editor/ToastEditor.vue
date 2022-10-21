@@ -32,8 +32,6 @@ onMounted( () => {
         const formdata = new FormData();
         formdata.append("multiFile",fileOrBlob);
         axios.post(process.env.VUE_APP_FILE_UPLOAD,formdata,{headers}).then((res) =>{
-          console.log(res);
-          console.log(res.data[0].fileChildId);
           callback(process.env.VUE_APP_EDITOR_IMAGE+res.data[0].fileId+"/"+res.data[0].fileChildId);
         }).catch(() => {
         }).finally(() => {

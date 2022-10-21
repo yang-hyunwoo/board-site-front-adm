@@ -162,7 +162,6 @@ export default {
         qrImg(value,src){
             this.selectQr=src
             this.qrOpen=true;
-            console.log(value);
         },  
         refundClick(uid,paid,person_count,id,list_id) {
                 this.$swal.fire({
@@ -203,7 +202,6 @@ export default {
             });
             },
             excelDownload(value) {
-                console.log(value);
                 let myDate = new Date();
                 let yy = String(myDate.getFullYear());
                 let mm = String(myDate.getMonth()+1 < 10 ? '0' + myDate.getMonth()+1 : myDate.getMonth()+1);

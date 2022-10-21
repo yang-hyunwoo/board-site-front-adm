@@ -132,7 +132,6 @@ export default {
       this.loading = true;
       this.$axios.get(process.env.VUE_APP_TRAVEL_QRCODE_LIST,{headers,params:parameter}).then((res) =>{
          if(res.data.resultCode=="SUCCESS"){
-          console.log(res);
           this.pageTotal = res.data.result.totalElements;
 
           this.totalList =res.data.result.totalElements;

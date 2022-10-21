@@ -119,11 +119,9 @@ export default {
       //1.user 정보 확인
       //2.resId 조회 count 확인 
       //3.되었다면 qrChk true로 변환
-        console.log("11111111111");
         this.isQrCodeToast(this.getJsonFromUrl(value).id , this.getJsonFromUrl(value).travelAgencyResId,this.getJsonFromUrl(value).count);
     }, 
     isQrCodeToast(id,travelAgencyResId,count) {
-      console.log("222222222222");
       const headers = {
             'Authorization': 'Bearer ' + sessionStorage.getItem("token")
         }
@@ -134,12 +132,10 @@ export default {
                     "travelAgencyListId" : this.travelAgencyId
                 }
         this.$axios.put(process.env.VUE_APP_TRAVEL_AGENCY_LIST_CRUD+"qrcode/qr-upd",param,{headers}).then((res) =>{
-          console.log(res);
           if(res.data.resultCode=="SUCCESS"){
               this.userList();
             }
           }).catch((error) => {
-            console.log(error.response.data.result);
               this.$swal('',error.response.data.result,'error');
           }).finally(() => {
           });
@@ -156,7 +152,6 @@ export default {
     getJsonFromUrl(url) {
        var querysplit = url.split("?");
         var query = querysplit[1];
-        console.log("::::"+query);
         var result = {};
         query.split("&").forEach(function(part) {
           var item = part.split("=");
@@ -176,7 +171,6 @@ export default {
           this.userList();
           }
         }).catch((error) => {
-          console.log(error.response.data.result);
              this.$swal('',error.response.data.result,'error');
              this.$router.push("/travelQrReadList");
         }).finally(() => {
@@ -217,7 +211,6 @@ export default {
           });
           }
         }).catch((error) => {
-          console.log(error);
              this.$swal('',error.response.data.result,'error');
              this.$router.push("/travelQrReadList");
         }).finally(() => {

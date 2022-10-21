@@ -120,7 +120,6 @@ export default {
         this.$axios.get(process.env.VUE_APP_TRAVEL_AGENCY+this.agencyId,{headers}).then((res) =>{
          if(res.data.resultCode=="SUCCESS"){
           let telSplit = res.data.result.tel.split("-");
-          console.log(res);
             this.agencyName = res.data.result.name;
             this.agencyComment = res.data.result.comment;
             this.title = res.data.result.title;

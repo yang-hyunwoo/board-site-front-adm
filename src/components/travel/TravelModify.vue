@@ -176,7 +176,6 @@ import ToastEditor from '@/components/editor/ToastModifyEditor.vue'
         this.$axios.get(process.env.VUE_APP_TRAVEL_AGENCY_LIST_CRUD+this.travelAgencyId,{headers}).then((res) =>{
          if(res.data.resultCode=="SUCCESS"){
             let data = res.data.result;
-            console.log(res);
             this.travelTitle = data.title;
             this.content = data.content;
             this.contentChange = data.content;
@@ -280,7 +279,6 @@ import ToastEditor from '@/components/editor/ToastModifyEditor.vue'
                     "travelRealTripAt" : this.startDate.replace(/\-/g,''),
                     "thumnbnailFileId" : this.fileId
                 }
-                console.log(param);
             await this.$axios.put(process.env.VUE_APP_TRAVEL_AGENCY_LIST_CRUD+this.travelAgencyId+"/form" ,param,{headers}).then((res) =>{
                     if(res.data.resultCode=="SUCCESS"){
                         this.$swal('',"저장되었습니다.",'success');
