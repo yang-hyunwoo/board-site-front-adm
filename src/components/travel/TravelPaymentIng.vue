@@ -95,7 +95,6 @@ export default {
             }
           }
         }).catch((error) => {
-          console.log(error.response.data.result);
              this.$swal('',error.response.data.result,'error');
              this.$router.push("/travelList");
         }).finally(() => {
@@ -117,9 +116,6 @@ export default {
               "operland" : "plus",
               "count"  : this.total_count
               }
-              console.log(this.person_count);
-              console.log(this.total_count);
-              console.log(this.person_max_count);
           if(this.person_count+this.total_count <= this.person_max_count) {
               this.$axios.get(process.env.VUE_APP_UPDATE_PERSON+this.travel_list_id,{params:parameter}).then(() =>{
               }).catch(() => {

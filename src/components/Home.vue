@@ -85,7 +85,6 @@ export default {
       }
       this.$axios.get(process.env.VUE_APP_TRAVEL_SCH,{headers}).then((res) =>{
           if(res.data.resultCode=="SUCCESS"){
-            console.log(res);
             this.calendarOptions.events=[];
             res.data.result.forEach(element => {
                 let obj = {};
@@ -109,7 +108,6 @@ export default {
 
       this.$axios.get(process.env.VUE_APP_TRAVEL_PAY_COUNT,{headers}).then((res) =>{
           if(res.data.resultCode=="SUCCESS"){
-            console.log(res);
             this.laebelss=[];
             this.datass=[];
             res.data.result.forEach(element => {

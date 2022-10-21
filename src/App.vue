@@ -17,7 +17,6 @@ export default {
   methods: {
     onLoad(event) {
       if(sessionStorage.getItem("token")!=null){
-        console.log("::::"+sessionStorage.getItem("token"));
         window.localStorage.setItem("token", sessionStorage.getItem("token"));
       }
     },

@@ -15,7 +15,6 @@ export default {
       
   // drawOutline(decodeData,context){    //QR 테두리 
   //   console.log(decodeData);
-  //   // console.log("1111");
   //       let points=[];
   //       points[0]=decodeData.bottomLeftCorner;
   //       points[1]=decodeData.bottomRightCorner;

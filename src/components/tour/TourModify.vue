@@ -63,7 +63,6 @@ export default {
   },
   created(){
     this.tourId = this.$route.query.sn;
-    console.log(this.$route.query.sn);
     this.init();
   },    
   methods: {
@@ -74,10 +73,8 @@ export default {
     validArticle() {
         this.loading = true;
         const headers = { 'Authorization': 'Bearer ' + sessionStorage.getItem("token")}
-        console.log(process.env.VUE_APP_TOUR_READ);
         this.$axios.get(process.env.VUE_APP_TOUR_READ+this.$route.query.sn,{headers}).then((res) =>{
          if(res.data.resultCode=="SUCCESS"){
-          console.log(res);
           this.citySelect = res.data.result.city;
             this.title = res.data.result.title;
             this.content = res.data.result.content;

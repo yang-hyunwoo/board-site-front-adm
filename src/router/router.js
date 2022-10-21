@@ -45,6 +45,13 @@ const routes = [
         component: ()=> import('@/components/travel/TravelQrReadList.vue'),
        },
        {
+        path: '/userList',
+        name: 'userList',
+        component: ()=> import('@/components/user/UserList.vue'),
+       },
+
+       
+       {
         path: '/travelQrScan',
         name: 'travelQrScan',
         component: ()=> import('@/components/travel/TravelQrScan.vue'),

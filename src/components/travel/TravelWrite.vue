@@ -178,7 +178,6 @@
                 this.contentChange =  value;
             },
             async regAgency(){
-                console.log(this.agencyId);
                 const headers = { 'Authorization': 'Bearer ' + sessionStorage.getItem("token")}
                 var content = this.contentChange;
                 content = content.replace(/&nbsp;/gi,"");
@@ -244,7 +243,6 @@
                     "travelRealTripAt" : this.startDate.replace(/\-/g,''),
                     "thumnbnailFileId" : this.saveThumbnail_id
                 }
-                console.log(param);
             await this.$axios.post(process.env.VUE_APP_TRAVEL_AGENCY_LIST_INSERT ,param,{headers}).then((res) =>{
                     if(res.data.resultCode=="SUCCESS"){
                         this.$swal('',"저장되었습니다.",'success');

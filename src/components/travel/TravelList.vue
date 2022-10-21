@@ -210,7 +210,6 @@ export default {
       this.loading = true;
       this.$axios.get(process.env.VUE_APP_TRAVEL_LIST,{headers,params:parameter}).then((res) =>{
          if(res.data.resultCode=="SUCCESS"){
-          console.log(res);
           this.pageTotal = res.data.result.totalElements;
 
           this.totalList =res.data.result.totalElements;
@@ -258,7 +257,6 @@ export default {
     },
 
     deleteClick(idx, value) {
-      console.log(idx);
       if(value=='진행 중'){
           const headers = {
                 'Authorization': 'Bearer ' + sessionStorage.getItem("token")
