@@ -123,8 +123,13 @@ export default {
                     this.img_real = true;
                 }
                 this.img_id = res.data.result.profileId;
-                this.img = process.env.VUE_APP_FILE_IMAGE_READ+res.data.result.profileId+"/"+1;
-
+                if(this.img_real) {
+                    this.$axios.get(process.env.VUE_APP_FILE_IMAGE_READ+res.data.result.profileId+"/"+1,{headers}).then((res) =>{
+                        this.img = res.data;
+                    }).catch(() => {
+                    }).finally(() => {
+                    });
+                }
             }
           }).catch(() => {
           }).finally(() => {
@@ -209,8 +214,13 @@ export default {
             formdata.append("multiFile",file);
             
         this.$axios.post(process.env.VUE_APP_FILE_UPLOAD,formdata,{headers}).then((res) =>{
-            this.img = process.env.VUE_APP_FILE_IMAGE_READ+res.data[0].fileId+"/1";
             this.img_id = res.data[0].fileId;
+            this.$axios.get(process.env.VUE_APP_FILE_IMAGE_READ+this.img_id+"/"+1,{headers}).then((res) =>{
+                        this.img_real = true;
+                        this.img = res.data;
+                    }).catch(() => {
+                    }).finally(() => {
+            });
         }).catch(() => {
         }).finally(() => {
         });
